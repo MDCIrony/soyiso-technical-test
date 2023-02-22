@@ -6,7 +6,7 @@ Author:
     Miguel Alejandro Díaz Castillo
 
 Date:
-    2023-02-21
+    2023-02-21a
 """
 import src.main as App
 

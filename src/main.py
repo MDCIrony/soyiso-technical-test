@@ -2,7 +2,7 @@
 
 Este módulo contiene los métodos necesarios para ejecutar la aplicación.
 
-Funciones:
+Métodos:
     - main(): Ejecuta el mainloop de la aplicación.
     - screen(): Imprime la pantalla principal de la aplicación.
 """
