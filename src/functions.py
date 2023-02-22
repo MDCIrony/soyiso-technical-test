@@ -6,7 +6,7 @@ Este módulo contiene la clase maestra con los atributos
     Para el ejemplo esta consiste en una serie de
     diccionarios predefinidos en el archivo dictionaries.py.
 """
-from typing import Dict
+from typing import Dict, List
 
 from src import dictionaries as DB
 
@@ -59,6 +59,7 @@ class DDBB:
         }
         # Auto_incremental key
         self.next_id: int = len(self.Productos) + 1
+        self.cache_id: List[int] = []
 
     def Add(self, product_name: str, product_price: float, product_stock: int) -> None:
         """Añade un nuevo producto a la base de datos.
@@ -75,8 +76,21 @@ class DDBB:
         self.Precios[self.next_id] = product_price
         self.Stock[self.next_id] = product_stock
 
-        # Incrementamos el siguiente id
-        self.next_id += 1
+        # Incrementamos el siguiente id evaluando si no quedan más en caché
+        if self.cache_id == []:
+            self.next_id = len(self.Productos) + 1
+        else:
+            # Eliminamos el id utilizado de caché
+            self.cache_id.remove(self.next_id)
+            
+            # Si no quedan más ids en caché, se asigna el siguiente id
+            # De lo contrario, se asigna el mínimo de los ids en caché
+            if self.cache_id == []:
+                self.next_id = len(self.Productos) + 1
+            else:
+                self.next_id = min(self.cache_id)
+            
+            
 
     def Delete(self, id: int) -> None:
         """Elimina un producto de la db.
@@ -92,12 +106,16 @@ class DDBB:
         Returns:
             None.
         """
+        if id in self.Productos.keys():
+            self.cache_id.append(id)
+            self.next_id = min(self.cache_id)
+        else:
+            raise ValueError("El id no existe.")
+        
         self.Productos.pop(id)
         self.Precios.pop(id)
         self.Stock.pop(id)
 
-        # Actualizamos el siguiente id
-        self.next_id = id
 
     def Update(self) -> None:
         """Actualiza un producto de la db.
