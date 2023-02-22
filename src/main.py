@@ -6,7 +6,7 @@ Métodos:
     - main(): Ejecuta el mainloop de la aplicación.
     - screen(): Imprime la pantalla principal de la aplicación.
 """
-from typing import List
+from typing import Union
 
 from src import utilities as util
 from src.Crud_class import DDBB
@@ -99,35 +99,57 @@ Apriete enter para continuar."
         else:
             for i in range(3, 0, -1):
                 try:
-                    id_to_update = int(input("ID del producto a actualizar: "))
+                    id_to_update: int = int(input("ID del producto a actualizar: "))
+
+                    # Si el id no existe...
                     if id_to_update not in Store.get_ordered_products().keys():
-                        raise KeyError(f"El id {id_to_update} no existe en la base de datos.")
+                        raise KeyError(
+                            f"El id {id_to_update} no existe en la base de datos."
+                        )
 
-                    new_name = input("Nuevo nombre del producto (dejar en blanco para mantener el actual): ")
+                    new_name: str = input(
+                        "Nuevo nombre del producto (dejar en blanco para mantener el actual): "
+                    )
                     if new_name == "":
-                        new_name = Store.get_ordered_products()[id_to_update]["Name"]
+                        new_name = str(
+                            Store.get_ordered_products()[id_to_update]["Name"]
+                        )
 
-                    new_price = input("Nuevo precio del producto (dejar en blanco para mantener el actual): ")
+                    new_price: Union[str, float] = input(
+                        "Nuevo precio del producto (dejar en blanco para mantener el actual): "
+                    )
                     if new_price == "":
                         new_price = Store.get_ordered_products()[id_to_update]["Price"]
                     else:
                         try:
                             new_price = float(new_price)
-                        except:
+                        # Gestionamos el error de que el precio no sea un número
+                        except ValueError:
                             raise Exception("El precio debe ser un número.")
 
-                    new_stock = input("Nuevo stock del producto (dejar en blanco para mantener el actual): ")
+                    new_stock: Union[str, int] = input(
+                        "Nuevo stock del producto (dejar en blanco para mantener el actual): "
+                    )
                     if new_stock == "":
-                        new_stock = Store.get_ordered_products()[id_to_update]["Stock"]
+                        new_stock = int(
+                            Store.get_ordered_products()[id_to_update]["Stock"]
+                        )
                     else:
                         try:
                             new_stock = int(new_stock)
-                        except:
+                        # Gestionamos el error de que el stock no sea un número entero
+                        except ValueError:
                             raise Exception("El stock debe ser un número entero.")
 
-                    Store.Update(id=id_to_update, new_name=new_name, new_price=new_price, new_stock=new_stock)
+                    Store.Update(
+                        id=id_to_update,
+                        new_name=new_name,
+                        new_price=new_price,
+                        new_stock=new_stock,
+                    )
                     break
 
+                # Gestionamos los errores
                 except ValueError:
                     print(f"Valor de id inválido. Intentos restantes: {i - 1}")
                     continue
@@ -168,14 +190,13 @@ def screen(Store: DDBB) -> None:
     print("========================================")
     print("Lista de Productos:")
     print("========================================")
-    
+
     for key, product in Store.get_ordered_products().items():
         print(f"{key} {product['Name']} {product['Price']} {product['Stock']}")
 
-
     print("========================================")
 
-    #Opciones disponibles
+    # Opciones disponibles
     for key, options in Store.get_options().items():
         if key < len(Store.Options):
             print(f"[{key}] {options}", end=", ")

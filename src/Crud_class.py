@@ -12,7 +12,7 @@ from src import dictionaries as DB
 
 
 class DDBB:
-    """Descripción breve de la clase.
+    """Clase que modela la bbdd.
 
     Clase que contiene los métodos para interactuar con la base de datos.
 
@@ -48,9 +48,6 @@ class DDBB:
             - next_id: Variable que contiene el valor
                 de la siguiente llave auto_incremental.
         """
-        # self.Productos: Dict[int, str] = DB.Productos
-        # self.Precios: Dict[int, float] = DB.Precios
-        # self.Stock: Dict[int, int] = DB.Stock
         self.Products: Dict[int, Dict[str, Union[str, float, int]]] = {
             key: {
                 "Name": DB.Productos[key],
@@ -85,7 +82,7 @@ class DDBB:
             "Name": product_name,
             "Price": product_price,
             "Stock": product_stock,
-        }            
+        }
 
         # Incrementamos el siguiente id evaluando si no quedan más en caché
         if self.cache_id == []:
@@ -121,10 +118,16 @@ class DDBB:
             self.next_id = min(self.cache_id)
         else:
             raise KeyError(f"El id {id} no existe en la base de datos.")
-        
+
         self.Products.pop(id)
 
-    def Update(self, id: int, new_name: str, new_price: float, new_stock: int) -> None:
+    def Update(
+        self,
+        id: int,
+        new_name: str,
+        new_price: Union[str, float],
+        new_stock: Union[str, int],
+    ) -> None:
         """Actualiza un producto de la db.
 
         Actualiza un producto de la base de datos
@@ -143,7 +146,6 @@ class DDBB:
             "Stock": new_stock,
         }
 
-
     def Exit(self) -> None:
         """Cierra la aplicación.
 
@@ -158,7 +160,7 @@ class DDBB:
             None.
         """
         raise KeyboardInterrupt
-    
+
     def get_ordered_products(self) -> Dict[int, Dict[str, Union[str, float, int]]]:
         """Obtiene los productos de la db.
 
@@ -176,7 +178,7 @@ class DDBB:
             ordered_products[key] = {
                 "Name": self.Products[key]["Name"],
                 "Price": self.Products[key]["Price"],
-                "Stock": self.Products[key]["Stock"]
+                "Stock": self.Products[key]["Stock"],
             }
         return ordered_products
 
