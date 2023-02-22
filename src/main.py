@@ -197,7 +197,11 @@ def screen(Store: DDBB) -> None:
     print("========================================")
 
     for key, product in Store.get_ordered_products().items():
-        print(f"{key} {product['Name']} {product['Price']} {product['Stock']}")
+        key_str: str = str(f"{key}".ljust(5))
+        name_str: str = str(f"{product['Name']}".ljust(20))
+        price_str: str = str(f"{product['Price']}".rjust(10))
+        stock_str: str = str(f"{product['Stock']}".rjust(5))
+        print(key_str + name_str + price_str + stock_str)
 
     print("========================================")
 
