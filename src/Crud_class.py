@@ -110,7 +110,7 @@ class DDBB:
             self.cache_id.append(id)
             self.next_id = min(self.cache_id)
         else:
-            raise ValueError
+            raise KeyError(f"El id {id} no existe en la base de datos.")
         
         self.Productos.pop(id)
         self.Precios.pop(id)

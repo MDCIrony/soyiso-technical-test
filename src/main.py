@@ -9,7 +9,7 @@ Métodos:
 from typing import List
 
 from src import utilities as util
-from src.functions import DDBB
+from src.Crud_class import DDBB
 
 
 def main() -> None:
@@ -73,13 +73,21 @@ def selection(Store: DDBB) -> None:
             product_price=float(input("Precio del producto: ")),
             product_stock=int(input("Stock del producto: ")),
         )
+
+
     elif option == 2:
-        for i in range(3, 0, -1):
-            try:
-                Store.Delete(id=int(input("ID del producto a eliminar: ")))
-                break
-            except ValueError:
-                print(f"El id no existe. Intentos restantes: {i - 1}")
+        if not Store.Productos:
+            input("No hay productos en la base de datos. Apriete enter para continuar.")
+        else:
+            for i in range(3, 0, -1):
+                try:
+                    Store.Delete(id=int(input("ID del producto a eliminar: ")))
+                    break
+                except ValueError:
+                    print(f"Valor de id inválido. Intentos restantes: {i - 1}")
+                except KeyError as error:
+                    print(error, f"Intentos restantes: {i - 1}")
+
     elif option == 3:
         pass
     elif option == 4:
