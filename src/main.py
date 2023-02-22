@@ -7,6 +7,8 @@ Métodos:
     - screen(): Imprime la pantalla principal de la aplicación.
 """
 from src import dictionaries as DB
+from src import utilities as util
+from src.functions import App_options as Options
 
 
 def main() -> None:
@@ -21,6 +23,39 @@ def main() -> None:
         None.
     """
     screen()
+    while True:  # Mainloop
+        try:
+            selection()
+
+            # Reinicia la pantalla con la información nueva
+            util.clean_window()
+            screen()
+
+        except ValueError:
+            print("Opción inválida, intente de nuevo.")
+
+        except KeyboardInterrupt:
+            print("\nSaliendo...")
+            break
+
+
+def selection() -> None:
+    """Descripción breve del método.
+
+    Función que ejecuta la opción seleccionada por el usuario.
+
+    Args:
+        None.
+
+    Returns:
+        None.
+    """
+    option: int = int(input("Elija opción: "))
+
+    if option not in Options.keys():
+        raise ValueError
+
+    Options[option]()
 
 
 def screen() -> None:

@@ -10,13 +10,13 @@ Stock = {1:50, 2:45, 3:30, 4:15}
 
 # Elaborar un programa que muestre los diccionarios, y programar las siguientes acciones:
 
-# [1] Agregar
+### [1] Agregar
 
-# [2] Eliminar
+### [2] Eliminar
 
-# [3] Actualizar
+### [3] Actualizar
 
-# [4] Salir
+### [4] Salir
 
 ========================================
 Lista de Productos:
