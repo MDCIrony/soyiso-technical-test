@@ -64,9 +64,11 @@ def selection(Store: DDBB) -> None:
     """
     option: int = int(input("Elija opción: "))
 
+    # Si la opción no existe...
     if option not in Store.get_options().keys():
         raise ValueError
 
+    # Si la opción es 1 [Añadir producto]
     if option == 1:
         Store.Add(
             product_name=input("Nombre del producto: "),
@@ -74,6 +76,7 @@ def selection(Store: DDBB) -> None:
             product_stock=int(input("Stock del producto: ")),
         )
 
+    # Si la opción es 2 [Eliminar producto]
     elif option == 2:
         if not Store.get_ordered_products().keys():
             input(
@@ -90,6 +93,7 @@ Apriete enter para continuar."
                 except KeyError as error:
                     print(error, f"Intentos restantes: {i - 1}")
 
+    # Si la opción es 3 [Actualizar producto]
     elif option == 3:
         if not Store.get_ordered_products().keys():
             input(
@@ -159,6 +163,7 @@ Apriete enter para continuar."
                 except Exception as error:
                     print(f"{error}. Intentos restantes: {i - 1}")
 
+    # Si la opción es 4 [Salir]
     elif option == 4:
         Store.Exit()
 
