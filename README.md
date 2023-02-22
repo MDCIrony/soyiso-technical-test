@@ -32,13 +32,8 @@ pip install -r requirements.txt
 python Stock_manager.py
 ```
 
-## Ejemplo de ejecución
+## Meta-data
 
-```bash
-[]: # Path: Stock_manager.py
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep  7 19:00:00 2021
-Author: @mdcirony
-"""
-```
+- Autor: [Miguel Díaz](https://github.com/MDCIrony)
+- Versión: 1.0.0
+- Fecha de creación: 2022-02-22
