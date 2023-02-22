@@ -1,4 +1,4 @@
-"""Descripción breve del módulo.
+"""Módulo principal de la aplicación.
 
 Este módulo contiene los métodos necesarios para ejecutar la aplicación.
 
@@ -33,7 +33,7 @@ def main() -> None:
 
     while True:  # Mainloop
         try:
-            # Solicitamos la opción a ejecutar con la base de datos instanciada
+            # Gestionamos la selección del usuario
             selection(Store)
 
             # Reinicia la pantalla con la información nueva
@@ -64,7 +64,7 @@ def selection(Store: DDBB) -> None:
     """
     option: int = int(input("Elija opción: "))
 
-    if option not in Store.Options.keys():
+    if option not in Store.get_options().keys():
         raise ValueError
 
     if option == 1:
@@ -74,10 +74,12 @@ def selection(Store: DDBB) -> None:
             product_stock=int(input("Stock del producto: ")),
         )
 
-
     elif option == 2:
-        if not Store.Productos:
-            input("No hay productos en la base de datos. Apriete enter para continuar.")
+        if not Store.get_ordered_products().keys():
+            input(
+                "No hay productos en la base de datos. \
+Apriete enter para continuar."
+            )
         else:
             for i in range(3, 0, -1):
                 try:
@@ -89,7 +91,52 @@ def selection(Store: DDBB) -> None:
                     print(error, f"Intentos restantes: {i - 1}")
 
     elif option == 3:
-        pass
+        if not Store.get_ordered_products().keys():
+            input(
+                "No hay productos en la base de datos. \
+Apriete enter para continuar."
+            )
+        else:
+            for i in range(3, 0, -1):
+                try:
+                    id_to_update = int(input("ID del producto a actualizar: "))
+                    if id_to_update not in Store.get_ordered_products().keys():
+                        raise KeyError(f"El id {id_to_update} no existe en la base de datos.")
+
+                    new_name = input("Nuevo nombre del producto (dejar en blanco para mantener el actual): ")
+                    if new_name == "":
+                        new_name = Store.get_ordered_products()[id_to_update]["Name"]
+
+                    new_price = input("Nuevo precio del producto (dejar en blanco para mantener el actual): ")
+                    if new_price == "":
+                        new_price = Store.get_ordered_products()[id_to_update]["Price"]
+                    else:
+                        try:
+                            new_price = float(new_price)
+                        except:
+                            raise Exception("El precio debe ser un número.")
+
+                    new_stock = input("Nuevo stock del producto (dejar en blanco para mantener el actual): ")
+                    if new_stock == "":
+                        new_stock = Store.get_ordered_products()[id_to_update]["Stock"]
+                    else:
+                        try:
+                            new_stock = int(new_stock)
+                        except:
+                            raise Exception("El stock debe ser un número entero.")
+
+                    Store.Update(id=id_to_update, new_name=new_name, new_price=new_price, new_stock=new_stock)
+                    break
+
+                except ValueError:
+                    print(f"Valor de id inválido. Intentos restantes: {i - 1}")
+                    continue
+                except KeyError as error:
+                    print(f"{error}. Intentos restantes: {i - 1}")
+                    continue
+                except Exception as error:
+                    print(f"{error}. Intentos restantes: {i - 1}")
+
     elif option == 4:
         Store.Exit()
 
@@ -121,21 +168,15 @@ def screen(Store: DDBB) -> None:
     print("========================================")
     print("Lista de Productos:")
     print("========================================")
+    
+    for key, product in Store.get_ordered_products().items():
+        print(f"{key} {product['Name']} {product['Price']} {product['Stock']}")
 
-    # Ordenamos las keys del diccionario
-    ordered_keys: List[int] = sorted(Store.Productos.keys())
-
-    for key in ordered_keys:
-        print(
-            f"{key} \
-      {Store.Productos[key]} \
-      {Store.Precios[key]} \
-      {Store.Stock[key]}"
-        )
 
     print("========================================")
 
-    for key, options in Store.Options.items():
+    #Opciones disponibles
+    for key, options in Store.get_options().items():
         if key < len(Store.Options):
             print(f"[{key}] {options}", end=", ")
         else:  # Last option

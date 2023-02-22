@@ -1,4 +1,4 @@
-"""Descripción breve del módulo.
+"""Diccionarios de datos.
 
 Este módulo contiene los diccionarios necesarios para ejecutar
     la aplicación Stock_manager.
