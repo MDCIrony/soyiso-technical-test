@@ -84,6 +84,7 @@ def selection(Store: DDBB) -> None:
 Apriete enter para continuar."
             )
         else:
+            # Damos 3 intentos al usuario
             for i in range(3, 0, -1):
                 try:
                     Store.Delete(id=int(input("ID del producto a eliminar: ")))
@@ -101,6 +102,7 @@ Apriete enter para continuar."
 Apriete enter para continuar."
             )
         else:
+            # Damos 3 intentos al usuario
             for i in range(3, 0, -1):
                 try:
                     id_to_update: int = int(input("ID del producto a actualizar: "))
@@ -111,6 +113,16 @@ Apriete enter para continuar."
                             f"El id {id_to_update} no existe en la base de datos."
                         )
 
+                    # Mostramos el producto a actualizar
+                    name_to_update: str = str(
+                        Store.get_ordered_products()[id_to_update]["Name"]
+                    )
+                    print(f"\nProducto a actualizar: {id_to_update} - {name_to_update}")
+
+                    # Solicitamos los nuevos datos permitiendo que el usuario
+                    # mantenga los actuales si desea, gestionando los errores
+
+                    # Nuevo nombre
                     new_name: str = input(
                         "Nuevo nombre del producto (dejar en blanco para mantener el actual): "
                     )
@@ -119,6 +131,7 @@ Apriete enter para continuar."
                             Store.get_ordered_products()[id_to_update]["Name"]
                         )
 
+                    # GNuevo número
                     new_price: Union[str, float] = input(
                         "Nuevo precio del producto (dejar en blanco para mantener el actual): "
                     )
@@ -131,6 +144,7 @@ Apriete enter para continuar."
                         except ValueError:
                             raise Exception("El precio debe ser un número.")
 
+                    # Nuevo stock
                     new_stock: Union[str, int] = input(
                         "Nuevo stock del producto (dejar en blanco para mantener el actual): "
                     )
@@ -145,6 +159,7 @@ Apriete enter para continuar."
                         except ValueError:
                             raise Exception("El stock debe ser un número entero.")
 
+                    # Actualizamos el producto
                     Store.Update(
                         id=id_to_update,
                         new_name=new_name,
@@ -153,7 +168,7 @@ Apriete enter para continuar."
                     )
                     break
 
-                # Gestionamos los errores
+                # Atajamos los errores
                 except ValueError:
                     print(f"Valor de id inválido. Intentos restantes: {i - 1}")
                     continue
