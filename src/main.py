@@ -41,7 +41,9 @@ def main() -> None:
             screen(Store)
 
         except ValueError:
-            print("Opción inválida, intente de nuevo.")
+            input("Opción inválida, presiona enter para intentar de nuevo.")
+            util.clean_window()
+            screen(Store)
 
         except KeyboardInterrupt:
             print("\nSaliendo...")
@@ -72,7 +74,12 @@ def selection(Store: DDBB) -> None:
             product_stock=int(input("Stock del producto: ")),
         )
     elif option == 2:
-        Store.Delete(id=int(input("ID del producto a eliminar: ")))
+        for i in range(3, 0, -1):
+            try:
+                Store.Delete(id=int(input("ID del producto a eliminar: ")))
+                break
+            except ValueError:
+                print(f"El id no existe. Intentos restantes: {i - 1}")
     elif option == 3:
         pass
     elif option == 4:
