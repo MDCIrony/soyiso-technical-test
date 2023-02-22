@@ -1,8 +1,8 @@
 # Description: This is the main file for the stock manager application
 # Author: Miguel Alejandro Díaz Castillo
-import sys
+# Date: 2023-02-21
 
-import stock_manager.main as Stock
+import src.main as App
 
-if __name__ == '__main__':
-    Stock.Hello()
+if __name__ == "__main__":
+    App.Hello()
