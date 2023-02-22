@@ -1,91 +1,130 @@
-"""Descripción breve del módulo.
+"""Clase con métodos CRUD para interactuar con la db (diccionarios).
 
-Este módulo contiene los métodos principales para
-    interactuar con la aplicación Stock_manager.
-
-Métodos:
-    - Add(): Añade un nuevo producto a la base de datos.
-    - Delete(): Elimina un producto de la base de datos.
-    - Update(): Actualiza la información de un producto.
-    - Exit(): Cierra la aplicación.
+Este módulo contiene la clase maestra con los atributos
+    y métodos principales para interactuar con la base
+    de datos manejada en la aplicación Stock_manager.
+    Para el ejemplo esta consiste en una serie de
+    diccionarios predefinidos en el archivo dictionaries.py.
 """
-from typing import Dict, Callable
+from typing import Dict
 
 from src import dictionaries as DB
 
 
-def Add() -> None:
-    """Descripción breve del método.
+class DDBB:
+    """Descripción breve de la clase.
 
-    Añade un nuevo producto a la base de datos
-        consultando al usuario el nombre, precio y stock.
+    Clase que contiene los métodos para interactuar con la base de datos.
 
-    Args:
-        None
-
-    Returns:
-        None.
+    Atributos:
+        - Productos: Diccionario que contiene los nombres de los productos.
+        - Precios: Diccionario que contiene los precios de los productos.
+        - Stock: Diccionario que contiene el stock de los productos.
     """
-    # Solicitar datos del producto
-    product_name: str = input("Nombre del producto: ")
-    product_price: float = float(input("Precio del producto: "))
-    product_stock: int = int(input("Stock del producto: "))
 
-    new_key: int = len(DB.Productos) + 1
+    # Class constructor
+    def __init__(self) -> None:
+        """Método que inicializa la db.
 
-    DB.Productos[new_key] = product_name
-    DB.Precios[new_key] = product_price
-    DB.Stock[new_key] = product_stock
+        Este método inicializa la base de datos con los
+            valores definidos en dictionaries.py. Al
+            estarse utilizando un diccionario y no una
+            db permanente, estos valores serán reiniciados
+            cada vez que se ejecute la aplicación
+            y cualquier modificación será borrada.
 
+        Args:
+            None
 
-def Delete():
-    """Descripción breve del método.
+        Atributos:
+            - Productos: Diccionario que contiene
+                los nombres de los productos.
+            - Precios: Diccionario que contiene los
+                precios de los productos.
+            - Stock: Diccionario que contiene el stock
+                de los productos.
+            - Options: Diccionario que contiene las
+                opciones del menú principal.
+            - next_id: Variable que contiene el valor
+                de la siguiente llave auto_incremental.
+        """
+        self.Productos: Dict[int, str] = DB.Productos
+        self.Precios: Dict[int, float] = DB.Precios
+        self.Stock: Dict[int, int] = DB.Stock
+        self.Options: Dict[int, str] = {
+            1: "Agregar",
+            2: "Eliminar",
+            3: "Actualizar",
+            4: "Salir",
+        }
+        # Auto_incremental key
+        self.next_id: int = len(self.Productos) + 1
 
-    Elimina un producto de la base de datos
-        consultando al usuario el id.
+    def Add(self, product_name: str, product_price: float, product_stock: int) -> None:
+        """Añade un nuevo producto a la base de datos.
 
-    Args:
-        None
+        Args:
+            - product_name: Nombre del producto.
+            - product_price: Precio del producto.
+            - product_stock: Stock del producto.
 
-    Returns:
-        None.
-    """
-    pass
+        Returns:
+            None.
+        """
+        self.Productos[self.next_id] = product_name
+        self.Precios[self.next_id] = product_price
+        self.Stock[self.next_id] = product_stock
 
+        # Incrementamos el siguiente id
+        self.next_id += 1
 
-def Update():
-    """Descripción breve del método.
+    def Delete(self, id: int) -> None:
+        """Elimina un producto de la db.
 
-    Actualiza un producto de la base de datos
-        consultando al usuario el id y los nuevos datos
-        [nombre, precio y stock].
+        Elimina un producto de la base de datos
+            consultando al usuario el id, luego
+            se actualiza el siguiente id con el
+            valor del id eliminado.
 
-    Args:
-        None
+        Args:
+            - id: ID del producto a eliminar.
 
-    Returns:
-        None.
-    """
-    pass
+        Returns:
+            None.
+        """
+        self.Productos.pop(id)
+        self.Precios.pop(id)
+        self.Stock.pop(id)
 
+        # Actualizamos el siguiente id
+        self.next_id = id
 
-def Exit():
-    """Descripción breve del método.
+    def Update(self) -> None:
+        """Actualiza un producto de la db.
 
-    Cierra la aplicación forzando un error de tipo KeyboardInterrupt.
+        Actualiza un producto de la base de datos
+            consultando al usuario el id y los nuevos datos
+            [nombre, precio y stock].
 
-    Args:
-        None
+        Args:
+            None
 
-    Returns:
-        None.
-    """
-    raise KeyboardInterrupt
+        Returns:
+            None.
+        """
+        pass
 
+    def Exit(self) -> None:
+        """Cierra la aplicación.
 
-App_options: Dict[int, Callable] = {
-    1: Add,
-    2: Delete,
-    3: Update,
-    4: Exit,
-}
+        Cierra la aplicación forzando un error de tipo
+            KeyboardInterrupt, el cual debe ser interceptado
+            en el mainloop.
+
+        Args:
+            None
+
+        Returns:
+            None.
+        """
+        raise KeyboardInterrupt

@@ -6,13 +6,14 @@ Métodos:
     - main(): Ejecuta el mainloop de la aplicación.
     - screen(): Imprime la pantalla principal de la aplicación.
 """
-from src import dictionaries as DB
+from typing import List
+
 from src import utilities as util
-from src.functions import App_options as Options
+from src.functions import DDBB
 
 
 def main() -> None:
-    """Descripción breve del método.
+    """Mainloop principal.
 
     Función principal del programa. Ejecuta la aplicación.
 
@@ -22,14 +23,22 @@ def main() -> None:
     Returns:
         None.
     """
-    screen()
+    util.clean_window()
+
+    # Instancia de la clase DDBB
+    Store = DDBB()
+
+    # Mostramos la pantalla principal de la aplicación
+    screen(Store)
+
     while True:  # Mainloop
         try:
-            selection()
+            # Solicitamos la opción a ejecutar con la base de datos instanciada
+            selection(Store)
 
             # Reinicia la pantalla con la información nueva
             util.clean_window()
-            screen()
+            screen(Store)
 
         except ValueError:
             print("Opción inválida, intente de nuevo.")
@@ -39,33 +48,45 @@ def main() -> None:
             break
 
 
-def selection() -> None:
-    """Descripción breve del método.
+def selection(Store: DDBB) -> None:
+    """Solicita al usuario la opción a ejecutar.
 
-    Función que ejecuta la opción seleccionada por el usuario.
+    Función que solicita al usuario la opción a ejecutar, y
+        la ejecuta llamando a los métodos de la clase DDBB.
 
     Args:
-        None.
+        - Store: Instancia de la clase DDBB.
 
     Returns:
         None.
     """
     option: int = int(input("Elija opción: "))
 
-    if option not in Options.keys():
+    if option not in Store.Options.keys():
         raise ValueError
 
-    Options[option]()
+    if option == 1:
+        Store.Add(
+            product_name=input("Nombre del producto: "),
+            product_price=float(input("Precio del producto: ")),
+            product_stock=int(input("Stock del producto: ")),
+        )
+    elif option == 2:
+        Store.Delete(id=int(input("ID del producto a eliminar: ")))
+    elif option == 3:
+        pass
+    elif option == 4:
+        Store.Exit()
 
 
-def screen() -> None:
-    """Descripción breve del método.
+def screen(Store: DDBB) -> None:
+    """Imprime la pantalla principal.
 
     Imprime en pantalla la lista de productos actualizada y.
     las opciones disponibles.
 
     Args:
-        None.
+        - Store: Instancia de la clase DDBB.
 
     Returns:
         None.
@@ -86,8 +107,21 @@ def screen() -> None:
     print("Lista de Productos:")
     print("========================================")
 
-    for key in DB.Productos.keys():
-        print(f"{key} {DB.Productos[key]} {DB.Precios[key]} {DB.Stock[key]}")
+    # Ordenamos las keys del diccionario
+    ordered_keys: List[int] = sorted(Store.Productos.keys())
+
+    for key in ordered_keys:
+        print(
+            f"{key} \
+      {Store.Productos[key]} \
+      {Store.Precios[key]} \
+      {Store.Stock[key]}"
+        )
 
     print("========================================")
-    print("[1] Agregar, [2] Eliminar, [3] Actualizar, [4] Salir")
+
+    for key, options in Store.Options.items():
+        if key < len(Store.Options):
+            print(f"[{key}] {options}", end=", ")
+        else:  # Last option
+            print(f"[{key}] {options}")
